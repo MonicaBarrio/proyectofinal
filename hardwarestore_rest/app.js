@@ -4,7 +4,6 @@
 	"use strict";
 	
 	// ANGULAR MODULE/APP (gemStore):
-	
 	var app = angular.module("ferStore", ["store-products"])
 
 		// CONTROLLERS:
@@ -30,6 +29,7 @@
                 console.log("delete gem....");
 				$http.delete("http://localhost:3001/api/fprod/"+id)
                 .then(function success(response){
+                    document.location.reload();
                     console.log(response);
                 },
                 function err(err){
@@ -37,7 +37,7 @@
                 })
                }
                else{
-                  //document.write ("User does not want to continue!");
+               
                   return false;
                } 
 			};
@@ -66,6 +66,7 @@
                 // JSON.stringify(data)
                 $http.post(url, this.product)
                 .then(function success(response){
+                    document.location.reload();
                     console.log(response);
                 },
                 function err(err){
@@ -73,6 +74,42 @@
                 })
         };
     }])
+
+
+
+
+    .controller("getids",["$http","$scope", function($http,$scope){
+        var store = this;
+        this.product = {
+			name:  '',
+			description: '',
+			price: 0,
+			Available: 0,
+			images:[""]                
+        };
+        
+        store.obetenerid = function (id) {
+          
+           
+            console.log(id);
+
+            console.log("searching gem....");
+            $http.get("http://localhost:3001/api/fprod/"+id).then(function success(response){
+                console.log(response.data);
+                return response.data;
+                console.log(response);
+            },
+            function(rejection) {
+                console.log(rejection.data);
+            });
+           
+        };
+    }])
+
+
+
+
+
 
 .controller("EditProduct", [ "$scope","$http", function ($scope, $http)  {     
     var url = 'http://localhost:3001/api/fprod';
@@ -88,7 +125,6 @@
         console.log(response);
         $scope.products = response.data.products;
     });
-    $scope.myproduct = $scope.products[0]; // frist
     console.log("cosa:");
 
     this.editGem = function() {
@@ -98,6 +134,7 @@
              
     	$http.put(url+"/"+id, $scope.myproduct)
              .then(function success(response){
+                document.location.reload();
                  console.log(response);
                  console.log("posting data....");
              },

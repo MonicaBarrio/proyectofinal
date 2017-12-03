@@ -5,7 +5,9 @@
 		<title>Hardware store</title>
 		<meta charset="UTF-8"/>
 		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
-		<link rel="stylesheet" type="text/css" href="custom.css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="custom.css"/>
 	</head>
 	<body class="container" ng-init="menu=1">
 		<nav class="navbar navbar-default">
@@ -13,78 +15,196 @@
 		            <div class="navbar-header">
 		                <a class="navbar-brand">FerreMax</a>
 		            </div>
-		            <ul class="nav navbar-nav">
-		                <li class="active"><a href="#" ng-click="menu=1">Store</a></li>
-		                <li class="active"><a href="#" ng-click="menu=2">Add Product</a></li>
-		            </ul>
+		            <ul class="nav navbar-nav" >
+		                <li class="active"><a href="#" ng-click="menu=1"  type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" ng-controller="StoreController as store">Store</a></li>
+		                <li class="active"><a href="#" ng-click="menu=2"  type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal2" ng-controller="NewProduct as newGemCtrl">Add Product</a></li>
+                        <li class="active"><a href="#" ng-click="menu=3"  >SEARCH PRODUCT</a></li>
+                        
+                    </ul>
 		        </div>
 		</nav>
 				<!--  App Title  -->
 		<hgroup id="app-title-wr" class="text-center">
 			<h1 id="app-title">FerreMax</h1>
 			<h2 id="app-subtitle">Hardware store Web</h2>
-		</hgroup>
-	<div ng-show="menu===1" class="container" ng-controller="StoreController as store" >
-		<!--  Products Container  -->
-		<div class="list-group">
-			<!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
-			<div class="list-group-item card">
-                <table class="table">
-                <thead>
-                    <tr>
-                        <th> Products</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- ngRepeat: item in clientes --><tr>
-                        <td class="ng-binding"  ng-repeat="product in store.products | orderBy:'-price'" > 
-                        Name:{{product.name | limitTo : 10}} <br>
-                        Price:{{product.price | currency}} <br>
-                        Description:{{product.description | limitTo : 15}} <br>
-                        Available:{{product.stock}} <br>
-                        <img class="small-image" ng-src="{{product.images}}" /> <br>
-                        <a href="javascript:void(0);" class="btn btn-info" ng-click="store.editProduct(product._id)"> Edit </a>
-                        <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.deleteProduct(product._id)"> Delete </a>
-                         </td>      
-                    </tr>
-                </tbody>
-            </table>
-			</div>
-		</div>
-	</div>
-	<div ng-show="menu===2" class="container" ng-controller="NewProduct as newGemCtrl">
-            <form name="newGemForm"  ng-submit="newGemForm.$valid && newGemCtrl.newGem(product);" novalidate>
-                <div class="form-group">
-                    <label for="name">Name:</label>
-                    <input type="text" ng-model="newGemCtrl.product.name" class="form-control" id="name">
+        </hgroup>
+        
+  
+  
+    <!-- Modal  GET-->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content"  >
+        <div class="modal-header" ng-controller="StoreController as store">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">HARDWARE</h4>
+          <div>
+            <!--  Products Container  -->
+            <div class="list-group">
+                <!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
+                <div class="list-group-item card">
+                    <table class="table">
+                    <thead>
+                        <tr>
+                            <th> Products</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- ngRepeat: item in clientes --><tr>
+                            <td class="ng-binding"  ng-repeat="product in store.products | orderBy:'-price'" > 
+                            Name:{{product.name | limitTo : 10}} <br>
+                            Price:{{product.price | currency}} <br>
+                            Description:{{product.description | limitTo : 15}} <br>
+                            Available:{{product.stock}} <br>
+                            <img class="small-image" ng-src="{{product.images}}" /> <br>
+                            <a href="javascript:void(0);" class="btn btn-info" ng-click="store.editProduct(product._id)"> Edit </a>
+                            <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.deleteProduct(product._id)"> Delete </a>
+                             </td>      
+                        </tr>
+                    </tbody>
+                </table>
                 </div>
-                <div class="form-group">
-                        <label for="name">Description:</label>
-                        <input type="text" ng-model="newGemCtrl.product.description" class="form-control" id="description">
-                </div>
-                <div class="form-group">
-                        <label for="name">Price:</label>
-                        <input type="number" ng-model="newGemCtrl.product.price" format="currency" class="form-control" id="price">
-                </div>
-                <div class="form-group">
-                        <label for="shine">Stock:</label>
-                        <input type="text" ng-model="newGemCtrl.product.stock" format="currency" class="form-control" id="shine">
-                </div>
-                <div class="form-group" ng-repeat="images in newGemCtrl.product.images track by $index">
-                            <label for="image">Images:</label>
-                            <input type="text" ng-model="newGemCtrl.product.images[$index]" class="form-control" id="images" >      
-                </div>
-                <div class="form group" pull rigth>
-                    <input class="form-control btn btn-lg btn-primary" value="Enviar" type ="submit"
-                    id="submit">
-                </div>
-            </form>
-            <pre>{{newGemCtrl.product | json }}</pre>    
+            </div>
         </div>
-		<!--  Scripts  -->
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-		<script type="text/javascript" src="products.js"></script>
-		<script type="text/javascript" src="app.js"></script>
+
+
+
+                        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                            <!-- POST !-->
+   <!-- Modal -->
+   <div class="modal fade" id="myModal2" role="dialog">
+        <div class="modal-dialog">
+          <!-- Modal content-->
+          <div class="modal-content"  >
+            <div class="modal-header" ng-controller="NewProduct as newGemCtrl">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">HARDWARE</h4>
+              <div>
+                <!--  Products Container  -->
+                <div class="list-group">
+                    <!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
+                    
+                    <form name="newGemForm"  ng-submit="newGemForm.$valid && newGemCtrl.newGem(product);" novalidate>
+                            <div class="form-group">
+                                <label for="name">Name:</label>
+                                <input type="text" ng-model="newGemCtrl.product.name" class="form-control" id="name">
+                            </div>
+                            <div class="form-group">
+                                    <label for="name">Description:</label>
+                                    <input type="text" ng-model="newGemCtrl.product.description" class="form-control" id="description">
+                            </div>
+                            <div class="form-group">
+                                    <label for="name">Price:</label>
+                                    <input type="number" ng-model="newGemCtrl.product.price" format="currency" class="form-control" id="price">
+                            </div>
+                            <div class="form-group">
+                                    <label for="shine">Stock:</label>
+                                    <input type="text" ng-model="newGemCtrl.product.stock" format="currency" class="form-control" id="shine">
+                            </div>
+                            <div class="form-group" ng-repeat="images in newGemCtrl.product.images track by $index">
+                                        <label for="image">Images:</label>
+                                        <input type="text" ng-model="newGemCtrl.product.images[$index]" class="form-control" id="images" >      
+                            </div>
+                            <div class="form group" pull rigth>
+                                <input class="form-control btn btn-lg btn-primary" value="Enviar" type ="submit"
+                                id="submit">
+                            </div>
+                        </form>
+                        <pre>{{newGemCtrl.product | json }}</pre>    
+                    </div>
+                    <!--  Scripts  -->
+                    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+                    <script type="text/javascript" src="products.js"></script>
+                    <script type="text/javascript" src="app.js"></script>
+
+
+                </div>
+            </div>
+    
+    
+    
+                            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+          
+        </div>
+     
+
+
+
+                                        <div  ng-show="menu===3" class="container"   ng-controller="StoreController as store">
+                                                <label for="">QUERY DATABASE</label><br>
+                                                <input type="text" ng-model="buscame">
+
+                                                <table class="table">
+                                                        <thead>
+                                                            <tr>
+                                                                <th> Products</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                    <td class="ng-binding" ng-repeat="product in store.products |filter:buscame ">
+                                                            ID: {{product._id}} <br>
+                                                            Name:{{product.name | limitTo : 10}} <br>
+                                                            Price:{{product.price | currency}} <br>
+                                                            Description:{{product.description | limitTo : 15}} <br>
+                                                            Available:{{product.stock}} <br>
+                                                            <img class="small-image" ng-src="{{product.images}}" /> <br>
+                                                    
+                                                    </td>
+                                                    </tbody>
+                                                
+                                        </div>
+                                   
+                                 
+
+
+                    
+    
+    
+    
+                          
+      
+      
+     
+
+
+
+
+
+
+
+                   
+	
 
 	</body>
 

@@ -6,8 +6,6 @@ const express = require('express'),
 	mongoose = require('mongoose');
 
 const Task = require('./api/models/fModel'); //created model loading here
-
-
 const app = express();
 
 const port = process.env.PORT || 3001;
