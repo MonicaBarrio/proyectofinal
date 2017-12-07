@@ -15,7 +15,6 @@
 		            </div>
 		            <ul class="nav navbar-nav">
 		                <li class="active"><a href="#" ng-click="menu=1">Store</a></li>
-		                <li class="active"><a href="#" ng-click="menu=2">Add Product</a></li>
 		            </ul>
 		        </div>
 		</nav>
@@ -26,61 +25,115 @@
 		</hgroup>
 	<div ng-show="menu===1" class="container" ng-controller="StoreController as store" >
 		<!--  Products Container  -->
-		<div class="list-group">
+
+    <div class="col-md-12" ng-show="store.status === ''">
+      <h3>Login Page</h3>
+      
+      <form ng-submit="store.login()" class="form">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input type="text" class="form-control" ng-model="store.username" placeholder="username" required=""/>
+          </div> 
+
+          <div class="form-group">
+            <input type="password" class="form-control" ng-model="store.password" placeholder="password" required=""/>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">Login</button>
+            <span class="text-danger">{{ store.error }}</span>
+          </div>
+
+        </div>
+      </form>
+    </div>
+
+		<div class="list-group" ng-show="store.status === 'list'">
 			<!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
 			<div class="list-group-item card">
                 <table class="table">
                 <thead>
                     <tr>
-                        <th> Products</th>
+                        <th> Products: <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.addProduct()" ng-show="store.user === 'admin'"> Add Item </a> <label>Search: <input ng-model="searchText"></label></th> 
                     </tr>
                 </thead>
                 <tbody>
                     <!-- ngRepeat: item in clientes --><tr>
-                        <td class="ng-binding"  ng-repeat="product in store.products | orderBy:'-price'" > 
+                        <td class="ng-binding"  ng-repeat="product in store.products | filter:searchText |orderBy:'-price'" > 
                         Name:{{product.name | limitTo : 10}} <br>
                         Price:{{product.price | currency}} <br>
                         Description:{{product.description | limitTo : 15}} <br>
                         Available:{{product.stock}} <br>
                         <img class="small-image" ng-src="{{product.images}}" /> <br>
-                        <a href="javascript:void(0);" class="btn btn-info" ng-click="store.editProduct(product._id)"> Edit </a>
-                        <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.deleteProduct(product._id)"> Delete </a>
+                        <a href="javascript:void(0);" class="btn btn-info" ng-click="store.editProduct(product._id)" ng-show="store.user === 'admin'"> Edit </a>
+                        <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.deleteProduct(product._id)" ng-show="store.user === 'admin'"> Delete </a>
+                        <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.buyProduct(product._id)" ng-show="store.user === 'user'"> Buy </a>
                          </td>      
                     </tr>
                 </tbody>
             </table>
 			</div>
 		</div>
-	</div>
-	<div ng-show="menu===2" class="container" ng-controller="NewProduct as newGemCtrl">
-            <form name="newGemForm"  ng-submit="newGemForm.$valid && newGemCtrl.newGem(product);" novalidate>
+        <div ng-show="store.status === 'add'" class="container" >
+            <form name="newItemForm"  ng-submit="newItemForm.$valid && store.newItem();" novalidate>
                 <div class="form-group">
                     <label for="name">Name:</label>
-                    <input type="text" ng-model="newGemCtrl.product.name" class="form-control" id="name">
+                    <input type="text" ng-model="store.newProduct.name" class="form-control" id="name">
                 </div>
                 <div class="form-group">
                         <label for="name">Description:</label>
-                        <input type="text" ng-model="newGemCtrl.product.description" class="form-control" id="description">
+                        <input type="text" ng-model="store.newProduct.description" class="form-control" id="description">
                 </div>
                 <div class="form-group">
                         <label for="name">Price:</label>
-                        <input type="number" ng-model="newGemCtrl.product.price" format="currency" class="form-control" id="price">
+                        <input type="number" ng-model="store.newProduct.price" format="currency" class="form-control" id="price">
                 </div>
                 <div class="form-group">
                         <label for="shine">Stock:</label>
-                        <input type="text" ng-model="newGemCtrl.product.stock" format="currency" class="form-control" id="shine">
+                        <input type="text" ng-model="store.newProduct.stock" format="currency" class="form-control" id="shine">
                 </div>
-                <div class="form-group" ng-repeat="images in newGemCtrl.product.images track by $index">
-                            <label for="image">Images:</label>
-                            <input type="text" ng-model="newGemCtrl.product.images[$index]" class="form-control" id="images" >      
+                <div class="form-group" >
+                            <label for="image">Image :</label>
+                            <input type="text" ng-model="store.newProduct.images" class="form-control" id="images" >      
                 </div>
                 <div class="form group" pull rigth>
                     <input class="form-control btn btn-lg btn-primary" value="Enviar" type ="submit"
                     id="submit">
                 </div>
             </form>
-            <pre>{{newGemCtrl.product | json }}</pre>    
+            <pre ng-show="store.user === 'admin'">{{store.newProduct | json }}</pre>    
         </div>
+        <div ng-show="store.status === 'edit'" class="container" >
+            <form name="editItemForm"  ng-submit="editItemForm.$valid && store.editItem(store.product._id);" novalidate>
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" ng-model="store.product.name" class="form-control" id="name">
+                </div>
+                <div class="form-group">
+                        <label for="name">Description:</label>
+                        <input type="text" ng-model="store.product.description" class="form-control" id="description">
+                </div>
+                <div class="form-group">
+                        <label for="name">Price:</label>
+                        <input type="number" ng-model="store.product.price" format="currency" class="form-control" id="price">
+                </div>
+                <div class="form-group">
+                        <label for="shine">Stock:</label>
+                        <input type="text" ng-model="store.product.stock" format="currency" class="form-control" id="shine">
+                </div>
+                <div class="form-group">
+                            <label for="image">Image:</label>
+                            <input type="text" ng-model="store.product.images" class="form-control" id="images" >      
+                </div>
+                <div class="form group" pull rigth>
+                    <input class="form-control btn btn-lg btn-primary" value="Enviar" type ="submit"
+                    id="submit">
+                </div>
+            </form>
+            <pre ng-show="store.user === 'admin'">{{store.product | json }}</pre>    
+        </div>        
+	</div>
+	
 		<!--  Scripts  -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
 		<script type="text/javascript" src="products.js"></script>

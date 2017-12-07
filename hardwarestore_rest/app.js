@@ -12,13 +12,60 @@
 		.controller("StoreController", ["$http", function ($http) {
 			
 			var store = this;
-			store.products = [];
+            var url = 'http://localhost:3001/api/fprod';
+
+            store.users = [{username:'sadmin', pass:'sadmin', tipo: 'sadmin'},
+                       {username:'admin', pass:'admin', tipo: 'admin'},
+                       {username:'user', pass:'user', tipo: 'user'}];
+
+            store.username = '';
+            store.password = '';
+
+            store.user = 'admin';
+            store.status = '';
+
+			store.products   = [];
+            store.product    = [];
+            store.newProduct =  {
+                name:  '',
+                description: '',
+                price: 0,
+                Available: 0,
+                images:[""]                
+            };
+
 			
 			//$http.get("products.json").success(function (data) {
 			$http.get("http://localhost:3001/api/fprod").success(function (data) {	
 				store.products = data;
 				console.log(store.products);
 			});
+
+            store.login = function () {
+                console.log('login '+ store.username + ' '+ store.password);
+                console.log(store.users);
+
+                var found = '';//store.users[0].username;
+                console.log(store.users[0]['username']);
+                var i =0;
+               for (i = 0; i < store.users.length; i++) { 
+                    if(store.users[i]['username'] == store.username && store.users[i]['pass'] == store.password){
+
+                        found += store.users[i]['tipo'];
+                        store.status = 'list';
+                        store.user = store.users[i]['tipo'];
+                        break; 
+                    }
+                }
+
+                //var u = store.users.find(store.username);
+                //console.log('u: '+ u);
+                //if(u =! -1) {
+                //    status = 'list';
+                //}               
+                
+              
+            };
 
 			store.deleteProduct = function (id) {
 
@@ -31,6 +78,10 @@
 				$http.delete("http://localhost:3001/api/fprod/"+id)
                 .then(function success(response){
                     console.log(response);
+                    store.status='list';
+                    $http.get("http://localhost:3001/api/fprod").success(function (data) {  
+                    store.products = data;
+                     });
                 },
                 function err(err){
                     console.log(err);
@@ -47,8 +98,58 @@
 			$http.get("http://localhost:3001/api/fprod/"+indice).success(function (data) {	
 				
 				console.log(data);
+                store.status = 'edit';
+                store.product = data;
 			});  
 		    };
+
+            store.editItem = function(product) {
+        
+        var id = product;
+        console.log(id);
+             
+        $http.put(url+"/"+id, store.product)
+             .then(function success(response){
+                 console.log(response);
+                 console.log("posting data....");
+                 store.status='list';
+                $http.get("http://localhost:3001/api/fprod").success(function (data) {  
+                store.products = data;
+                console.log(store.products);
+            });
+             },
+             function err(err){
+                 console.log(err);
+             })
+    };
+
+
+
+                store.addProduct = function() {
+
+
+                
+                store.status = 'add';
+                //store.product = [];
+           
+            };
+     store.newItem = function() {
+                console.log("posting data TO: "+url);
+                console.log(store.newProduct);
+                // JSON.stringify(data)
+                $http.post(url, store.newProduct)
+                .then(function success(response){
+                    console.log(response);
+                    store.status='list';
+                    $http.get("http://localhost:3001/api/fprod").success(function (data) {  
+                    store.products = data;
+                     });
+
+                },
+                function err(err){
+                    console.log(err);
+                })
+        };
 		}])
 
 	    .controller("NewProduct", ["$http", function ($http)  {
@@ -60,13 +161,14 @@
 			Available: 0,
 			images:[""]                
         };
-        this.newGem = function(product) {
+        this.newItem = function(product) {
                 console.log("posting data....");
                 console.log(product);
                 // JSON.stringify(data)
                 $http.post(url, this.product)
                 .then(function success(response){
                     console.log(response);
+
                 },
                 function err(err){
                     console.log(err);
