@@ -15,8 +15,8 @@
             var url = 'http://localhost:3001/api/fprod';
 
             store.users = [{username:'sadmin', pass:'sadmin', tipo: 'sadmin'},
-                       {username:'admin', pass:'admin', tipo: 'admin'},
-                       {username:'user', pass:'user', tipo: 'user'}];
+                           {username:'admin', pass:'admin', tipo: 'admin'},
+                           {username:'user', pass:'user', tipo: 'user'}];
 
             store.username = '';
             store.password = '';
@@ -38,6 +38,7 @@
 			//$http.get("products.json").success(function (data) {
 			$http.get("http://localhost:3001/api/fprod").success(function (data) {	
 				store.products = data;
+                res.json({msg: 'This is CORS-enabled for all origins!'})
 				console.log(store.products);
 			});
 
@@ -67,16 +68,18 @@
               
             };
 
+
 			store.deleteProduct = function (id) {
 
 				console.log(id);
-				
-			   var retVal = confirm("Do you want to continue ?");
+                
+               var retVal = confirm("Do you want to continue ?");
                if( retVal == true ){
 
                 console.log("delete gem....");
 				$http.delete("http://localhost:3001/api/fprod/"+id)
                 .then(function success(response){
+                   document.location.reload();
                     console.log(response);
                     store.status='list';
                     $http.get("http://localhost:3001/api/fprod").success(function (data) {  
@@ -110,6 +113,7 @@
              
         $http.put(url+"/"+id, store.product)
              .then(function success(response){
+               document.location.reload();
                  console.log(response);
                  console.log("posting data....");
                  store.status='list';
@@ -139,6 +143,7 @@
                 // JSON.stringify(data)
                 $http.post(url, store.newProduct)
                 .then(function success(response){
+                   document.location.reload();
                     console.log(response);
                     store.status='list';
                     $http.get("http://localhost:3001/api/fprod").success(function (data) {  
@@ -167,6 +172,7 @@
                 // JSON.stringify(data)
                 $http.post(url, this.product)
                 .then(function success(response){
+                   document.location.reload();
                     console.log(response);
 
                 },
@@ -187,6 +193,7 @@
         };
     //GET para llenar select con productos
     $http.get(url).then(function success(response){
+       document.location.reload();
         console.log(response);
         $scope.products = response.data.products;
     });
@@ -200,6 +207,7 @@
              
     	$http.put(url+"/"+id, $scope.myproduct)
              .then(function success(response){
+               document.location.reload();
                  console.log(response);
                  console.log("posting data....");
              },
