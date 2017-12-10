@@ -6,6 +6,21 @@
 		<meta charset="UTF-8"/>
 		<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="custom.css"/>
+        <style>
+   table, th , td {
+      border: 1px solid grey;
+      border-collapse: collapse;
+      padding: 5px;
+   }
+   
+   table tr:nth-child(odd) {
+      background-color: #f2f2f2;
+   }
+
+   table tr:nth-child(even) {
+      background-color: #ffffff;
+   }
+</style>
 	</head>
 	<body class="container" ng-init="menu=1">
 		<nav class="navbar navbar-default">
@@ -41,13 +56,64 @@
 
           <div class="form-group">
             <button type="submit" class="btn btn-success">Login</button>
+            
+             <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.addUser()" ng-show="store.user === 'admin'"> Register </a>
             <span class="text-danger">{{ store.error }}</span>
           </div>
 
         </div>
       </form>
+     
     </div>
 
+        <div class="col-md-12" ng-show="store.status === 'reguser'">
+      <h3>Register Page</h3>
+      
+      <form ng-submit="store.newUser()" class="form">
+        <div class="col-md-4">
+          <div class="form-group">
+            <input id="newusername" type="text" class="form-control" ng-model="store.newUserData.username" placeholder="username" required=""/>
+          </div> 
+
+          <div class="form-group">
+            <input type="password" class="form-control" ng-model="store.newUserData.password" placeholder="password" required="" id="newpassword"/>
+          </div>
+
+ 
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-success">Register</button>
+            
+            <span class="text-danger">{{ store.error }}</span>
+          </div>
+
+        </div>
+      </form>
+      <pre ng-show="store.user === 'admin'">{{store.newUserData | json }}</pre> 
+    </div>
+
+<div class="list-group" ng-show="store.status === 'saList'">
+            <!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
+            <div class="list-group-item card">
+                <h2> Actions:  <label>Search: <input ng-model="searchTextA"></label> </h2>
+                <table>
+              
+                    <tr class="ng-binding">
+                        <th> UserId</th> <th> User Name</th> <th> Oper Type</th> <th> Item</th> 
+                    </tr>
+            
+                    <tr class="ng-binding" ng-repeat="action in store.actions | filter:searchTextA">
+                        <td > {{action.idUser }} </td>  
+                        <td > {{action.name }} </td>     
+                        <td > {{action.oper}}  </td>  
+                        <td > {{action.item }} </td> 
+                    </tr>
+            
+            </table>
+            </div>
+        </div>
+
+<!-- -->
 		<div class="list-group" ng-show="store.status === 'list'">
 			<!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
 			<div class="list-group-item card">
@@ -74,6 +140,45 @@
             </table>
 			</div>
 		</div>
+
+<!-- -->
+        <div class="list-group" ng-show="store.status === 'buy'">
+            <!--  Product Container  ng-repeat="product in store.products | orderBy:'-price'" -->
+            <div class="list-group-item card">
+            
+                        <div>  
+                        Name:{{store.newProduct.name | limitTo : 10}} <br>
+                        Price:{{store.newProduct.price | currency}} <br>
+                        Description:{{store.newProduct.description}} <br>
+                        Available:{{store.newProduct.stock}} <br>
+                        <img class="small-image" ng-src="{{store.newProduct.images}}" /> <br>
+                        
+
+                            <form name="newItemForm"  ng-submit="newItemForm.$valid && store.newItem();" novalidate>
+                                <div class="form-group">
+                                    <label for="name">Quantity:</label>
+                                    <input type="text" ng-model="store.buyData.quantity" class="form-control" id="name">
+                                </div>
+                                <div class="form-group">
+                                        <label for="name">Credit Card No.:</label>
+                                        <input type="text" ng-model="store.buyData.creditCard" class="form-control" id="description">
+                                </div>
+                                <div class="form-group">
+                                        <label for="name">CC Code</label>
+                                        <input type="number" ng-model="store.buyData.ccCode" class="form-control" id="price">
+                                </div>
+                                
+                            </form>
+                            <pre ng-show="store.user === 'admin'">{{store.newProduct | json }}</pre> 
+
+                        <a href="javascript:void(0);" class="btn btn-danger" ng-click="store.newBuy()" ng-show="store.user === 'user'"> Buy </a>
+                         </div>      
+
+            </table>
+            </div>
+        </div>    
+
+<!-- -->           
         <div ng-show="store.status === 'add'" class="container" >
             <form name="newItemForm"  ng-submit="newItemForm.$valid && store.newItem();" novalidate>
                 <div class="form-group">
@@ -99,6 +204,14 @@
                 <div class="form group" pull rigth>
                     <input class="form-control btn btn-lg btn-primary" value="Enviar" type ="submit"
                     id="submit">
+                </div>
+                <div class="form group" ng-show="false">
+
+                            <input type="text" ng-model="store.username" class="form-control" id="images" >      
+                </div>
+                <div class="form group" ng-show="false">
+                        
+                            <input type="text" ng-model="store.userId" class="form-control" id="images" >      
                 </div>
             </form>
             <pre ng-show="store.user === 'admin'">{{store.newProduct | json }}</pre>    
