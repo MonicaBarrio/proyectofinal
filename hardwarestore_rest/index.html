@@ -8,7 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="custom.css"/>
         <style>
    table, th , td {
-      border: 1px solid grey;
+     
       border-collapse: collapse;
       padding: 5px;
    }
@@ -151,7 +151,7 @@
                         Price:{{store.newProduct.price | currency}} <br>
                         Description:{{store.newProduct.description}} <br>
                         Available:{{store.newProduct.stock}} <br>
-                        <img class="small-image" ng-src="{{store.newProduct.images}}" /> <br>
+                        <img class="small-image" ng-src="{{store.newProduct.images}}" ng-show="store.status === 'buy'"/> <br>
                         
 
                             <form name="newItemForm"  ng-submit="newItemForm.$valid && store.newItem();" novalidate>
@@ -249,7 +249,7 @@
 	
 		<!--  Scripts  -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
-		<script type="text/javascript" src="products.js"></script>
+
 		<script type="text/javascript" src="app.js"></script>
 
 	</body>

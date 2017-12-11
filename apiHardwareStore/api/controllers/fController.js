@@ -57,9 +57,6 @@ exports.list_all_actions = function(req, res) {
 
 exports.create_a_products = function(req, res) {
   var new_products = new products();
- console.log('req: ',req.params); 
-console.log('cuerpo: ',req.body);
-
   new_products.name  = req.body.name;
   new_products.price = req.body.price;
   new_products.description = req.body.description;
